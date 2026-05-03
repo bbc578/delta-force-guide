@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { MapPin, Crosshair } from 'lucide-react';
+import { MapPin, Crosshair, Flag, LogOut } from 'lucide-react';
 import type { MapData } from '../types';
 import { MAP_DIFFICULTY_COLORS, DIFFICULTY_LABELS } from '../types';
 
@@ -16,18 +16,9 @@ export default function MapCard({ map }: { map: MapData }) {
         <div className="absolute inset-0 flex items-center justify-center">
           <MapPin className="w-16 h-16 text-[var(--color-olive-light)] opacity-30 group-hover:scale-110 transition-transform duration-300" />
         </div>
-        <div
-          className="absolute inset-0 opacity-10"
-          style={{
-            backgroundImage: 'linear-gradient(rgba(74,93,35,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(74,93,35,0.3) 1px, transparent 1px)',
-            backgroundSize: '20px 20px',
-          }}
-        />
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'linear-gradient(rgba(74,93,35,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(74,93,35,0.3) 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
         <div className="absolute top-3 right-3">
-          <span
-            className="px-3 py-1 rounded-full text-xs font-bold text-white"
-            style={{ backgroundColor: diffColor }}
-          >
+          <span className="px-3 py-1 rounded-full text-xs font-bold text-white" style={{ backgroundColor: diffColor }}>
             {diffLabel}
           </span>
         </div>
@@ -47,7 +38,15 @@ export default function MapCard({ map }: { map: MapData }) {
         <div className="mt-4 flex items-center gap-4 text-xs text-[var(--color-text-secondary)]">
           <span className="flex items-center gap-1">
             <Crosshair className="w-3.5 h-3.5" />
-            {map.loot_count ?? '?'} 个物资点
+            {map.loot_count ?? '?'} 物资
+          </span>
+          <span className="flex items-center gap-1">
+            <Flag className="w-3.5 h-3.5" />
+            {map.spawn_count ?? '?'} 出生
+          </span>
+          <span className="flex items-center gap-1">
+            <LogOut className="w-3.5 h-3.5" />
+            {map.extract_count ?? '?'} 撤离
           </span>
         </div>
       </div>

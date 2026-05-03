@@ -48,5 +48,53 @@ def init_db():
             difficulty_level INTEGER
         )
     """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS spawn_points (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            map_id INTEGER NOT NULL,
+            name TEXT NOT NULL,
+            x REAL NOT NULL,
+            y REAL NOT NULL,
+            description TEXT,
+            FOREIGN KEY (map_id) REFERENCES maps(id)
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS extraction_points (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            map_id INTEGER NOT NULL,
+            name TEXT NOT NULL,
+            x REAL NOT NULL,
+            y REAL NOT NULL,
+            type TEXT DEFAULT 'fixed',
+            description TEXT,
+            FOREIGN KEY (map_id) REFERENCES maps(id)
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS routes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            map_id INTEGER NOT NULL,
+            name TEXT NOT NULL,
+            description TEXT,
+            difficulty INTEGER DEFAULT 1,
+            risk_level TEXT DEFAULT 'low',
+            estimated_value INTEGER,
+            spawn_point_id INTEGER,
+            FOREIGN KEY (map_id) REFERENCES maps(id),
+            FOREIGN KEY (spawn_point_id) REFERENCES spawn_points(id)
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS route_waypoints (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            route_id INTEGER NOT NULL,
+            order_index INTEGER NOT NULL,
+            x REAL NOT NULL,
+            y REAL NOT NULL,
+            label TEXT,
+            FOREIGN KEY (route_id) REFERENCES routes(id)
+        )
+    """)
     conn.commit()
     conn.close()

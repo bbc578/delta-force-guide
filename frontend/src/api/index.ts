@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { MapData, LootLocation, Tip } from '../types';
+import type { MapData, LootLocation, Tip, SpawnPoint, ExtractionPoint, Route, RouteDetail } from '../types';
 
 const api = axios.create({
   baseURL: '/api',
@@ -32,5 +32,25 @@ export const fetchTips = async (category?: string): Promise<Tip[]> => {
   const params: Record<string, string> = {};
   if (category) params.category = category;
   const { data } = await api.get('/tips', { params });
+  return data;
+};
+
+export const fetchSpawnPoints = async (mapId: number): Promise<SpawnPoint[]> => {
+  const { data } = await api.get('/spawns', { params: { map_id: mapId } });
+  return data;
+};
+
+export const fetchExtractionPoints = async (mapId: number): Promise<ExtractionPoint[]> => {
+  const { data } = await api.get('/extractions', { params: { map_id: mapId } });
+  return data;
+};
+
+export const fetchRoutes = async (mapId: number): Promise<Route[]> => {
+  const { data } = await api.get('/routes', { params: { map_id: mapId } });
+  return data;
+};
+
+export const fetchRouteDetail = async (routeId: number): Promise<RouteDetail> => {
+  const { data } = await api.get(`/routes/${routeId}`);
   return data;
 };

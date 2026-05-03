@@ -8,7 +8,11 @@ export interface MapData {
   width: number;
   height: number;
   loot_count?: number;
+  spawn_count?: number;
+  extract_count?: number;
   loot_locations?: LootLocation[];
+  spawn_points?: SpawnPoint[];
+  extraction_points?: ExtractionPoint[];
 }
 
 export interface LootLocation {
@@ -64,6 +68,52 @@ export interface Tip {
   difficulty_level: number;
 }
 
+export interface SpawnPoint {
+  id: number;
+  map_id: number;
+  name: string;
+  x: number;
+  y: number;
+  description: string;
+}
+
+export interface ExtractionPoint {
+  id: number;
+  map_id: number;
+  name: string;
+  x: number;
+  y: number;
+  type: string;
+  description: string;
+}
+
+export interface Route {
+  id: number;
+  map_id: number;
+  name: string;
+  description: string;
+  difficulty: number;
+  risk_level: string;
+  estimated_value: number;
+  spawn_point_id: number;
+  spawn_name?: string;
+  spawn_x?: number;
+  spawn_y?: number;
+}
+
+export interface RouteWaypoint {
+  id: number;
+  route_id: number;
+  order_index: number;
+  x: number;
+  y: number;
+  label: string;
+}
+
+export interface RouteDetail extends Route {
+  waypoints: RouteWaypoint[];
+}
+
 export const TIP_CATEGORIES: Record<string, string> = {
   '移动': '🏃 移动技巧',
   '战斗': '⚔️ 战斗技巧',
@@ -87,4 +137,18 @@ export const MAP_DIFFICULTY_COLORS: Record<number, string> = {
   3: '#f59e0b',
   4: '#f97316',
   5: '#ef4444',
+};
+
+export const RISK_COLORS: Record<string, string> = {
+  'low': '#22c55e',
+  'medium': '#f59e0b',
+  'high': '#ef4444',
+  'very_high': '#dc2626',
+};
+
+export const RISK_LABELS: Record<string, string> = {
+  'low': '低风险',
+  'medium': '中风险',
+  'high': '高风险',
+  'very_high': '极高风险',
 };
