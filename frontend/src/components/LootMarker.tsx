@@ -1,36 +1,63 @@
-import { CircleMarker, Popup } from 'react-leaflet';
 import type { LootLocation } from '../types';
 import { LOOT_TYPES, RARITY_COLORS, RARITY_LABELS } from '../types';
 
 interface Props {
   loot: LootLocation;
-  position: [number, number];
+  isSelected: boolean;
+  onClick: () => void;
 }
 
-export default function LootMarker({ loot, position }: Props) {
+export default function LootMarker({ loot, isSelected, onClick }: Props) {
   const typeConfig = LOOT_TYPES.find((t) => t.key === loot.type);
   const color = typeConfig?.color || '#9ca3af';
+  const icon = typeConfig?.icon || '📦';
   const rarityColor = RARITY_COLORS[loot.rarity] || '#9ca3af';
   const rarityLabel = RARITY_LABELS[loot.rarity] || loot.rarity;
 
+  // Higher spawn rate = larger marker
+  const size = loot.spawn_rate >= 70 ? 14 : loot.spawn_rate >= 40 ? 12 : 10;
+
   return (
-    <CircleMarker
-      center={position}
-      radius={8}
-      pathOptions={{
-        color,
-        fillColor: color,
-        fillOpacity: 0.7,
-        weight: 2,
+    <div
+      className="absolute cursor-pointer transition-all duration-200 hover:scale-125 group"
+      style={{
+        left: `${loot.x}%`,
+        top: `${loot.y}%`,
+        transform: 'translate(-50%, -50%)',
+        zIndex: isSelected ? 20 : 10,
       }}
+      onClick={onClick}
     >
-      <Popup>
-        <div className="min-w-[180px]">
+      {/* Glow effect */}
+      <div
+        className="absolute inset-0 rounded-full blur-sm opacity-50"
+        style={{
+          width: size + 8,
+          height: size + 8,
+          backgroundColor: color,
+          marginLeft: -4,
+          marginTop: -4,
+        }}
+      />
+      {/* Marker dot */}
+      <div
+        className="relative rounded-full border-2 transition-all duration-200"
+        style={{
+          width: size,
+          height: size,
+          backgroundColor: isSelected ? color : `${color}99`,
+          borderColor: color,
+          boxShadow: isSelected ? `0 0 12px ${color}` : 'none',
+        }}
+      />
+      {/* Hover tooltip */}
+      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-30">
+        <div className="bg-[#242424] border border-[#3a3a3a] rounded-lg px-3 py-2 whitespace-nowrap shadow-xl">
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-base">{typeConfig?.icon || '📦'}</span>
-            <span className="font-bold text-sm">{loot.name}</span>
+            <span className="text-sm">{icon}</span>
+            <span className="text-xs font-bold text-[var(--color-text-primary)]">{loot.name}</span>
           </div>
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex gap-1">
             <span
               className="px-1.5 py-0.5 rounded text-[10px] font-bold text-white"
               style={{ backgroundColor: color }}
@@ -44,13 +71,8 @@ export default function LootMarker({ loot, position }: Props) {
               {rarityLabel}
             </span>
           </div>
-          <p className="text-xs text-gray-600 mb-1">{loot.description}</p>
-          <div className="flex justify-between text-xs text-gray-500">
-            <span>💰 {loot.estimated_value.toLocaleString()}</span>
-            <span>🎯 {loot.spawn_rate}%</span>
-          </div>
         </div>
-      </Popup>
-    </CircleMarker>
+      </div>
+    </div>
   );
 }
